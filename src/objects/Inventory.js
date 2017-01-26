@@ -34,7 +34,9 @@ class Inventory {
         }
     }
 
+    //
     // Methods
+    //
 }
 
 export default Inventory;

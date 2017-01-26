@@ -5,7 +5,7 @@ class Attributes {
     //
     constructor(game) { }
 
-    // Thoughts here: MV can use passed in objects ie. characterClass as a way to modify your base attributes
+    // MV thoughts: can use passed in objects ie. characterClass as a way to modify your base attributes
     // by setting the attribute modifier ie. strenghtModifier by using a specific characterClass
     // Example: if(characterClass == "Warrier") {_strengthModifier = 1.2}
 
@@ -79,7 +79,7 @@ class Attributes {
     }
 
     get baseStrength() {
-        return _baseStrength * _strengthModifier;
+        return _baseStrength;
     }
 
     set baseStrength(baseStrength) {
@@ -99,7 +99,7 @@ class Attributes {
     }
 
     get baseIntelligence() {
-        return _baseIntelligence * _intelligenceModifier;
+        return _baseIntelligence;
     }
 
     set baseIntelligence(baseIntelligence) {
@@ -119,7 +119,7 @@ class Attributes {
     }
 
     get baseDexterity() {
-        return _baseDexterity * _dexterityModifier;
+        return _baseDexterity;
     }
 
     set baseDexterity(baseDexterity) {
@@ -138,8 +138,9 @@ class Attributes {
         }
     }
 
+    //
     // Methods
-
+    //
 }
 
 export default Attributes;

@@ -5,7 +5,6 @@ class Equipment {
     //
     constructor(game) { }
 
-    // weapon object, damagePerSecond or damage, equipmentSlots
     constructor(game, armor, weapons, equipmentSlots) {
         this._armor = armor;
         this._weapons = weapons;
@@ -45,7 +44,9 @@ class Equipment {
         }
     }
 
+    //
     // Methods
+    //
 }
 
 export default Equipment;

@@ -56,7 +56,9 @@ class Player {
     }
   }
 
+  //
   // Methods
+  //
 
 }
 

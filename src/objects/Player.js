@@ -4,13 +4,6 @@ class Player {
   // Constructors
   //
   constructor(game) { }
-  // basestength, modified strength, dext, int, equipment slots
-
-  // attributes (baseAttributes, armor, weapons, class), name, hitpoints, characterLevel, experienceToNextLevel
-  //  modifier object
-  // armor object
-  // weapon object, damagePerSecond or damage
-  // Inventory, gold
 
   constructor(game, characterClass, attributes, equipment, inventory) {
     // the main Player

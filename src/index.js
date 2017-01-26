@@ -8,8 +8,11 @@ class Game extends Phaser.Game {
 
 	constructor() {
 
-		super(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
+		// Setting the screen size
+		super(800, 600, Phaser.AUTO);
+		//super(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
 
+		// States
 		this.state.add('Boot', Boot, false);
 		this.state.add('Preload', Preload, false);
 		this.state.add('GameTitle', GameTitle, false);

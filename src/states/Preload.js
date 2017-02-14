@@ -53,13 +53,6 @@ class Preload extends Phaser.State {
         buttonImage.ctx.fillRect(0, 0, 225, 48);
         buttonImage.ctx.strokeRect(0, 0, 225, 48);
         this.game.cache.addBitmapData('button', buttonImage);
-
-        // world progression
-        this.level = 1;
-        // how many monsters have we killed during this level
-        this.levelKills = 0;
-        // how many monsters are required to advance a level
-        this.levelKillsRequired = 10;
 	}
 
 	create() {

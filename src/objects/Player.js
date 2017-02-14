@@ -3,8 +3,13 @@ class Player {
   //
   // Constructors
   //
-  constructor(game) { }
+  constructor(game) { 
+  	this.clickDmg = 1;
+    this.gold = 50;
+    this.dps = 0;
+  }
 
+  /*
   constructor(game, characterClass, attributes, equipment, inventory) {
     // the main Player
     this._characterClass = characterClass;
@@ -12,6 +17,7 @@ class Player {
     this._equipment = equipment;
     this._inventory = inventory;
   }
+  */
 
   //
   // Property Getters/Setters

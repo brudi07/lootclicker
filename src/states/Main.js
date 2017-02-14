@@ -3,13 +3,26 @@ import Player from 'objects/Player';
 
 class Main extends Phaser.State {
 
-	create() {
+	// Constructor to initialize our objects
+	constructor() {
+		super();
+		// the main player
+        this.player = {
+            clickDmg: 1,
+            gold: 50,
+        }
+        // the world stats
+        this.area = {
+        	level: 1,
+        	levelKills: 0,
+        	levelKillsRequired: 10
+        }
+	}
 
-		// Instantiate player
-		let player = new Player(this.game);
+	create() {
 		// Create state
 		let state = this;
-
+		// Create the background
         this.background = this.game.add.group();
         // setup each of our background layers to take the full screen
         ['forest-back', 'forest-lights', 'forest-middle', 'forest-front']
@@ -19,16 +32,16 @@ class Main extends Phaser.State {
                 bg.tileScale.setTo(4,4);
             });
 
+         // Create the upgrade panel
         this.upgradePanel = this.game.add.image(10, 70, this.game.cache.getBitmapData('upgradePanel'));
         var upgradeButtons = this.upgradePanel.addChild(this.game.add.group());
         upgradeButtons.position.setTo(8, 8);
-
+        // Upgrade Button
         var upgradeButtonsData = [
             {icon: 'dagger', name: 'Attack', level: 0, cost: 5, purchaseHandler: function(button, player) {
                 player.clickDmg += 1;
             }},
         ];
-
         var button;
         upgradeButtonsData.forEach(function(buttonData, index) {
             button = state.game.add.button(0, (50 * index), state.game.cache.getBitmapData('button'));
@@ -41,6 +54,7 @@ class Main extends Phaser.State {
             upgradeButtons.addChild(button);
         });
 
+        // Monster data
         var monsterData = [
             {name: 'Aerocephal',        image: 'aerocephal',        maxHealth: 10},
             {name: 'Arcana Drake',      image: 'arcana_drake',      maxHealth: 20},
@@ -61,6 +75,7 @@ class Main extends Phaser.State {
         ];
         this.monsters = this.game.add.group();
 
+        // Load monster
         var monster;
         monsterData.forEach(function(data) {
             // create a sprite for them off screen
@@ -74,30 +89,31 @@ class Main extends Phaser.State {
 
             //enable input so we can click it!
             monster.inputEnabled = true;
-            monster.events.onInputDown.add(state.onClickMonster, state, player);
+            monster.events.onInputDown.add(state.onClickMonster, state);
 
             // hook into health and lifecycle events
             monster.events.onKilled.add(state.onKilledMonster, state);
             monster.events.onRevived.add(state.onRevivedMonster, state);
         });
 
-        // display the monster front and center
+        // Display the monster front and center
         this.currentMonster = this.monsters.getRandom();
         this.currentMonster.position.set(this.game.world.centerX + 100, this.game.world.centerY + 50);
 
         this.monsterInfoUI = this.game.add.group();
-        this.monsterInfoUI.position.setTo(this.currentMonster.x - 220, this.currentMonster.y + 120);
+        this.monsterInfoUI.position.setTo(this.currentMonster.x - 80, this.currentMonster.y + 20);
         this.monsterNameText = this.monsterInfoUI.addChild(this.game.add.text(0, 0, this.currentMonster.details.name, {
-            font: '48px Arial Black',
+            font: '24px Arial Black',
             fill: '#fff',
             strokeThickness: 4
         }));
-        this.monsterHealthText = this.monsterInfoUI.addChild(this.game.add.text(0, 80, this.currentMonster.health + ' HP', {
-            font: '32px Arial Black',
+        this.monsterHealthText = this.monsterInfoUI.addChild(this.game.add.text(0, 40, this.currentMonster.health + ' HP', {
+            font: '20px Arial Black',
             fill: '#ff0000',
             strokeThickness: 4
         }));
 
+        // Damage numbers
         this.dmgTextPool = this.add.group();
         var dmgText;
         for (var d=0; d<50; d++) {
@@ -121,28 +137,27 @@ class Main extends Phaser.State {
             this.dmgTextPool.add(dmgText);
         }
 
-        // create a pool of gold coins
+        // Create a pool of gold coins
         this.coins = this.add.group();
         this.coins.createMultiple(50, 'gold_coin', '', false);
         this.coins.setAll('inputEnabled', true);
-        this.coins.setAll('goldValue', 1);
         this.coins.callAll('events.onInputDown.add', 'events.onInputDown', this.onClickCoin, this);
 
-        this.playerGoldText = this.add.text(30, 30, 'Gold: ' + player.gold, {
+        this.playerGoldText = this.add.text(30, 30, 'Gold: ' + this.player.gold, {
             font: '24px Arial Black',
             fill: '#fff',
             strokeThickness: 4
         });
 
-        // setup the world progression display
+        // Setup the world progression display
         this.levelUI = this.game.add.group();
         this.levelUI.position.setTo(this.game.world.centerX, 30);
-        this.levelText = this.levelUI.addChild(this.game.add.text(0, 0, 'Level: ' + this.level, {
+        this.levelText = this.levelUI.addChild(this.game.add.text(0, 0, 'Level: ' + this.area.level, {
             font: '24px Arial Black',
             fill: '#fff',
             strokeThickness: 4
         }));
-        this.levelKillsText = this.levelUI.addChild(this.game.add.text(0, 30, 'Kills: ' + this.levelKills + '/' + this.levelKillsRequired, {
+        this.levelKillsText = this.levelUI.addChild(this.game.add.text(0, 30, 'Kills: ' + this.area.levelKills + '/' + this.area.levelKillsRequired, {
             font: '24px Arial Black',
             fill: '#fff',
             strokeThickness: 4
@@ -155,13 +170,13 @@ class Main extends Phaser.State {
             return Math.ceil(button.details.cost + (button.details.level * 1.46));
         }
 
-        if (player.gold - getAdjustedCost() >= 0) {
-            player.gold -= getAdjustedCost();
-            playerGoldText.text = 'Gold: ' + player.gold;
+        if (this.player.gold - getAdjustedCost() >= 0) {
+            this.player.gold -= getAdjustedCost();
+            this.playerGoldText.text = 'Gold: ' + this.player.gold;
             button.details.level++;
             button.text.text = button.details.name + ': ' + button.details.level;
             button.costText.text = 'Cost: ' + getAdjustedCost();
-            button.details.purchaseHandler.call(this, button, player);
+            button.details.purchaseHandler.call(this, button, this.player);
         }
     }
 
@@ -169,39 +184,42 @@ class Main extends Phaser.State {
         if (!coin.alive) {
             return;
         }
+        // set gold value
+        let goldValue = 1 * this.area.level;
         // give the player gold
-        //player.gold += coin.goldValue;
+        this.player.gold += goldValue;
         // update UI
-        this.playerGoldText.text = 'Gold: ' + 1;
+        this.playerGoldText.text = 'Gold: ' + this.player.gold;
         // remove the coin
         coin.kill();
     }
 
     onKilledMonster(monster) {
+
         // move the monster off screen again
         monster.position.set(1000, this.game.world.centerY);
 
-        var coin;
+        let coin;
         // spawn a coin on the ground
         coin = this.coins.getFirstExists(false);
         coin.reset(this.game.world.centerX + this.game.rnd.integerInRange(-100, 100), this.game.world.centerY);
-        coin.goldValue = Math.round(this.level * 1.33);
+        coin.goldValue = Math.round(this.world.level * 1.33);
         this.game.time.events.add(Phaser.Timer.SECOND * 3, this.onClickCoin, this, coin);
 
-        this.levelKills++;
+        this.area.levelKills++;
 
-        if (this.levelKills >= this.levelKillsRequired) {
-            this.level++;
-            this.levelKills = 0;
+        if (this.area.levelKills >= this.area.levelKillsRequired) {
+            this.area.level++;
+            this.area.levelKills = 0;
         }
 
-        this.levelText.text = 'Level: ' + this.level;
-        this.levelKillsText.text = 'Kills: ' + this.levelKills + '/' + this.levelKillsRequired;
+        this.levelText.text = 'Level: ' + this.area.level;
+        this.levelKillsText.text = 'Kills: ' + this.area.levelKills + '/' + this.area.levelKillsRequired;
 
         // pick a new monster
         this.currentMonster = this.monsters.getRandom();
         // upgrade the monster based on level
-        this.currentMonster.maxHealth = Math.ceil(this.currentMonster.details.maxHealth + ((this.level - 1) * 10.6));
+        this.currentMonster.maxHealth = Math.ceil(this.currentMonster.details.maxHealth + ((this.area.level - 1) * 10.6));
         // make sure they are fully healed
         this.currentMonster.revive(this.currentMonster.maxHealth);
     }
@@ -215,12 +233,12 @@ class Main extends Phaser.State {
 
     onClickMonster(monster, pointer) {
         // apply click damage to monster
-        this.currentMonster.damage(1);
+        this.currentMonster.damage(this.player.clickDmg);
 
         // grab a damage text from the pool to display what happened
-        var dmgText = this.dmgTextPool.getFirstExists(false);
+        let dmgText = this.dmgTextPool.getFirstExists(false);
         if (dmgText) {
-            dmgText.text = 1;
+            dmgText.text = this.player.clickDmg;
             dmgText.reset(pointer.positionDown.x, pointer.positionDown.y);
             dmgText.alpha = 1;
             dmgText.tween.start();

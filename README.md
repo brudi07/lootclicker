@@ -1,6 +1,6 @@
 LootClicker
 
-A click based game dungeon game.
-Built using phaser.js using ES6.
+Click the monsters, get the loot, kill monsters faster for more loot.
+A single page web game using the phaser.js engine and ES6 technology.
 
 Main author: Ben Rudi (brudi07@gmail.com)

@@ -1,27 +1,32 @@
-import Boot from 'states/Boot';
-import Preload from 'states/Preload';
-import GameTitle from 'states/GameTitle';
-import Main from 'states/Main';
-import GameOver from 'states/GameOver';
+import Phaser from "phaser";
+import logoImg from "./assets/logo.png";
 
-class Game extends Phaser.Game {
+const config = {
+  type: Phaser.AUTO,
+  parent: "phaser-example",
+  width: 800,
+  height: 600,
+  scene: {
+    preload: preload,
+    create: create
+  }
+};
 
-	constructor() {
+const game = new Phaser.Game(config);
 
-		// Setting the screen size
-		super(800, 600, Phaser.AUTO);
-		//super(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
-
-		// States
-		this.state.add('Boot', Boot, false);
-		this.state.add('Preload', Preload, false);
-		this.state.add('GameTitle', GameTitle, false);
-		this.state.add('Main', Main, false);
-		this.state.add('GameOver', GameOver, false);
-
-		this.state.start('Boot');
-	}
-
+function preload() {
+  this.load.image("logo", logoImg);
 }
 
-const game = new Game();
+function create() {
+  const logo = this.add.image(400, 150, "logo");
+
+  this.tweens.add({
+    targets: logo,
+    y: 450,
+    duration: 2000,
+    ease: "Power2",
+    yoyo: true,
+    loop: -1
+  });
+}

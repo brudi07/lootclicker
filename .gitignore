@@ -1,10 +1,14 @@
-node_modules/
-build/
+# System and IDE files
+Thumbs.db
 .DS_Store
-npm-debug.log
+.idea
+*.suo
+*.sublime-project
+*.sublime-workspace
 
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# Vendors
+node_modules/
+
+# Build
+dist/
+/npm-debug.log
